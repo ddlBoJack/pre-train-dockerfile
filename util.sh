@@ -4,4 +4,7 @@ docker push zym22/pre-train:latest
 docker run -it --runtime=nvidia --name pre-train \
     --mount src=/mnt/xlancefs/home/zym22/data,target=/data/zym22,type=bind \
     --mount src=/mnt/xlancefs/home/xc095/data,target=/data/xc095,type=bind \
-    zym22/pre-train bash
+    -v /mnt/xlancefs/home/zym22:/home/zym22 \
+    -p 12345:22 \
+    --ipc=host
+    zym22/pre-train:latest /bin/bash
