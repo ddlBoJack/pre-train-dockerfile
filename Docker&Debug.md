@@ -1,8 +1,8 @@
 # An Intro to set up your Docker environment and debug using VSCode
 
-> Created by Ziyang on 2021.12.20
+> Created by zym22 on 2021.12.20
 >
-> Based on SJTU-XLANCE Servers & speech pre-train docker as examples. 
+> Based on SJTU-XLANCE Servers & Speech Pre-train Docker as examples. 
 
 
 
@@ -145,3 +145,32 @@ python -m debugpy --listen 5678 --wait-for-client main.py args
 <img src="Docker&Debug/image-20211220114021177.png" alt="image-20211220114021177" style="zoom:50%;" />
 
 <img src="Docker&Debug/image-20211220114209393.png" alt="image-20211220114209393" style="zoom:50%;" />
+
+
+
+## About the Speech Pre-train Docker
+
+> A docker for Speech, compatible with Kaldi, Espnet and Fairseq.
+
+Basic environment：
+
+- ubuntu=16.04 
+- cudnn=7 cuda=10.2 
+- python=3.8 torch=1.10.0 torchaudio=0.10.0 
+- condaenv=espnet 
+
+Basic Directory structure:
+
+```bash
+- root
+	- miniconda3
+	- .bashrc
+	- .profile
+- data
+	- zym22
+	- xc095
+- espnet
+- fairseq -> espnet/tools/fairseq
+- kaldi -> espnet/tools/kaldi
+```
+
