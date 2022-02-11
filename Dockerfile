@@ -2,13 +2,17 @@ FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
 USER root
 RUN cp /etc/apt/sources.list.bak  /etc/apt/sources.list
 RUN apt update
-RUN apt-get -y install wget man git less openssl libssl-dev
+RUN apt-get -y install wget curl man git less openssl libssl-dev unzip
 RUN apt install -y openssh-server
 
 # (optional) install git-lfs for pcl gpu cluster
-apt-get install curl
-curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
-apt-get install git-lfs
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+RUN apt-get install git-lfs
+
+# (optional) install rclone for pcl gpu cluster
+RUN sed -i ‘s/mozilla\/DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/g’ /etc/ca-certificates.conf
+RUN update-ca-certificates
+RUN curl https://rclone.org/install.sh | bash
 
 # install openmpi
 ENV OPENMPI_VERSION=4.0
