@@ -3,6 +3,12 @@ USER root
 RUN cp /etc/apt/sources.list.bak  /etc/apt/sources.list
 RUN apt update
 RUN apt-get -y install wget man git less openssl libssl-dev
+RUN apt install -y openssh-server
+
+# (optional) install git-lfs for pcl gpu cluster
+apt-get install curl
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+apt-get install git-lfs
 
 # install openmpi
 ENV OPENMPI_VERSION=4.0
