@@ -67,4 +67,5 @@ RUN ln -s espnet/tools/kaldi . && ln -s espnet/tools/fairseq .
 
 # use conda env "espnet" once entering the container
 RUN echo ". /espnet/tools/activate_python.sh" >> ~/.bashrc
-CMD ["bash"]
+ENTRYPOINT ["bash"]
+# CMD ["bash"]
