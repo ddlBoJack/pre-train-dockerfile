@@ -65,7 +65,19 @@ RUN . ./activate_python.sh && ./installers/install_fairseq.sh
 WORKDIR /
 RUN ln -s espnet/tools/kaldi . && ln -s espnet/tools/fairseq .
 
+# install tmux
+RUN apt -y install tmux
+
+# ninja for C++ build in pytorch
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip && \
+        unzip ninja-linux.zip -d /usr/local/bin/ && \
+        update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force
+# install vim
+RUN git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && sh ~/.vim_runtime/install_awesome_vimrc.sh
+RUN echo "set number" >> ~/.vimrc
+
 # use conda env "espnet" once entering the container
 RUN echo ". /espnet/tools/activate_python.sh" >> ~/.bashrc
-ENTRYPOINT ["bash"]
-# CMD ["bash"]
+# ENTRYPOINT ["bash"]
+ENV SHELL=/bin/bash
+CMD ["/bin/bash"]
