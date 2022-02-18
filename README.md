@@ -148,7 +148,7 @@ python -m debugpy --listen 5678 --wait-for-client main.py args
 
 
 
-## About the Speech Pre-train Docker
+## About the Speech Pre-train Docker (Latest tag: 20220218)
 
 > A docker for Speech, compatible with Kaldi, Espnet and Fairseq.
 
