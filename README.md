@@ -138,6 +138,8 @@ Host myDocker
 ```bash
 pip install debugpy
 python -m debugpy --listen 5678 --wait-for-client main.py args
+# An example to debug wav2vec2.0 using fairseq.
+python -m debugpy --listen 5678 --wait-for-client ../miniconda3/envs/espnet/bin/fairseq-hydra-train task.data=examples/wav2vec/manifest --config-dir examples/wav2vec/config/pretraining --config-name wav2vec2_test_librispeech
 ```
 
 3. Start debugging mode.
