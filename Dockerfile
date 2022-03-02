@@ -1,5 +1,13 @@
 FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
+
+LABEL MAINTAINER="matrixzheng01@gmail.com"
+
 USER root
+
+COPY vimrc /root/.vim_runtime
+COPY ninja-linux.zip / 
+COPY fairseq fairseq 
+COPY Miniconda3-latest-Linux-x86_64.sh /root
 
 RUN set -x \
     && cp /etc/apt/sources.list.bak  /etc/apt/sources.list \
@@ -23,18 +31,6 @@ RUN mkdir /tmp/openmpi \
 
 ENV PATH /usr/local/mpi/bin:$PATH
 
-ENV PATH="/root/miniconda3/bin:${PATH}"
-RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-	&& bash Miniconda3-latest-Linux-x86_64.sh -b \
-    && rm -rf Miniconda3-latest-Linux-x86_64.sh \
-    && useradd -m matrix
-
-ENV CONDA_EXE /root/miniconda3/bin/conda
-ENV CONDA_TOOLS_DIR /root/miniconda3
-
-COPY vimrc /root/.vim_runtime
-COPY ninja-linux.zip /
-COPY fairseq fairseq
 
 RUN set -x \
     && apt -y install tmux \
@@ -44,8 +40,27 @@ RUN set -x \
     && rm -rf ninja-linux.zip \
     && update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force \
     && sh ~/.vim_runtime/install_awesome_vimrc.sh \
-    && echo "set number" >> ~/.vimrc \
-    && conda create -n wav2vec python=3.8 -y
+    && echo "set number" >> ~/.vimrc
+
+ENV PATH /opt/conda/bin:$PATH
+
+RUN cd /root \
+    # && wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
+    && rm -f Miniconda3-latest-Linux-x86_64.sh \
+    && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
+    && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
+    && . /root/.bashrc \
+    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/ \
+    && conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ \
+    && conda config --set show_channel_urls yes \
+    && conda create -n wav2vec python=3.8 -y \
+    && conda activate wav2vec \
+    && conda install numpy matplotlib scipy -y \
+    && cd /root/fairseq \
+    && pip install --editable ./
+
+    # && conda create -n wav2vec python=3.8 -y
     # && conda activate wav2vec \
     # && conda deactivate
     # && git clone https://github.com/pytorch/fairseq \
@@ -53,10 +68,9 @@ RUN set -x \
     # && pip install --editable ./
 # ENV SHELL=/bin/bash
 # SHELL ["conda", "run", "-n", "wav2vec", "/bin/bash", "-c"]
-RUN . activate \
-    && conda activate wav2vec \ 
-    && cd fairseq \
-    && pip install --editable ./
+# RUN . activate \
+#     && conda activate wav2vec \ 
+#     && cd fairseq \
+#     && pip install --editable ./
 
 CMD [ "/bin/bash" ]
-# CMD [ "/b" ]
