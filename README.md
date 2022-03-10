@@ -9,4 +9,4 @@ Running the following code in your command line.
 docker pull matrixzheng/wav2vec:tag
 ```
 
-// here "tag" should be specified.
+> here "tag" should be specified.
