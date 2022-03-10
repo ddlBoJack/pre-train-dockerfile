@@ -48,6 +48,7 @@ ENV PATH /opt/conda/bin:$PATH
 # RUN cd / \
     # && git clone git://github.com/pytorch/fairseq
 
+# install conda and fairseq
 RUN cd /root \
     && wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && sh Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
@@ -72,6 +73,10 @@ RUN cd /root \
 
 ENV SHELL=/bin/bash
 CMD [ "/bin/bash" ]
+
+
+
+
 # install flashlight
 # RUN apt update \
 #     && apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev libnss3 libgtk-3-0 libglib2.0 xdg-utils libopenblas-dev -y \
