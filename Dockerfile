@@ -35,7 +35,7 @@ ENV PATH /usr/local/mpi/bin:$PATH
 RUN set -x \
     && apt -y install tmux \
     # && git config --global http.proxy http://127.0.0.1:7890 \
-    && wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip \
+    && wget https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip\
     && unzip ninja-linux.zip -d /usr/local/bin/ \
     && rm -rf ninja-linux.zip \
     && update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force \
@@ -61,34 +61,39 @@ RUN cd /root \
     && conda create -n wav2vec python=3.8 -y \
     && conda activate wav2vec \
     && conda install numpy matplotlib scipy -y \
+    && echo "conda activate wav2vec" >> ~/.bashrc \
+    # (optional) only for cloudbrain
+    && pip install --upgrade numpy \ 
     # install fairseq
     && cd / \
     && git clone git://github.com/pytorch/fairseq \
     && cd fairseq \
     && pip install --editable ./
 
+ENV SHELL=/bin/bash
+CMD [ "/bin/bash" ]
 # install flashlight
-RUN apt update \
-    && apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev libnss3 libgtk-3-0 libglib2.0 xdg-utils libopenblas-dev -y \
-    && cd home \
-    && mkdir repo \
-    && cd repo \
-    && git clone git://github.com/kpu/kenlm.git \
-    && cd kenlm \
-    && mkdir -p build \
-    && cd build \
-    && cmake .. && make -j 4 \
-    # install fftw3
-    && cd /home/repo \
-    && wget http://www.fftw.org/fftw-3.3.9.tar.gz \
-    && tar zxvf fftw-3.3.9.tar.gz \
-    && cd fftw-3.3.9 \
-    && mkdir build \
-    && cd build \
-    && cmake .. && make -j 4 \
-    && make install \
-    && cd /home/repo \
-    && wget https://registrationcenter-download.intel.com/akdlm/irc_nas/17977/l_BaseKit_p_2021.3.0.3219_offline.sh
+# RUN apt update \
+#     && apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev libnss3 libgtk-3-0 libglib2.0 xdg-utils libopenblas-dev -y \
+#     && cd home \
+#     && mkdir repo \
+#     && cd repo \
+#     && git clone git://github.com/kpu/kenlm.git \
+#     && cd kenlm \
+#     && mkdir -p build \
+#     && cd build \
+#     && cmake .. && make -j 4 \
+#     # install fftw3
+#     && cd /home/repo \
+#     && wget http://www.fftw.org/fftw-3.3.9.tar.gz \
+#     && tar zxvf fftw-3.3.9.tar.gz \
+#     && cd fftw-3.3.9 \
+#     && mkdir build \
+#     && cd build \
+#     && cmake .. && make -j 4 \
+#     && make install \
+#     && cd /home/repo \
+#     && wget https://registrationcenter-download.intel.com/akdlm/irc_nas/17977/l_BaseKit_p_2021.3.0.3219_offline.sh
     # && bash l_BaseKit_p_2021.3.0.3219_offline.sh \
     # # install flashlight
     # && cd /home/repo \
@@ -98,5 +103,3 @@ RUN apt update \
     # && export KENLM_ROOT=/home/repo/kenlm \
     # && pip3 install packaging cmake \
     # && python setup.py install --user
-
-CMD [ "/bin/bash" ]
