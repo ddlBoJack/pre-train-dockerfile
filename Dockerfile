@@ -66,6 +66,8 @@ RUN cd /root \
     # (optional) only for cloudbrain
     && pip install --upgrade numpy \ 
     # install fairseq
+    && pip install soundfile \
+    && apt-get install -y libsndfile1-dev \
     && cd / \
     && git clone git://github.com/pytorch/fairseq \
     && cd fairseq \
