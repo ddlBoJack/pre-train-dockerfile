@@ -60,7 +60,9 @@ RUN apt -y install bc
 RUN . ./activate_python.sh && pip install gpustat && pip install mpi4py
 
 # FairSeq Commit id when making this PR: `commit 313ff0581561c7725ea9430321d6af2901573dfb`
-RUN . ./activate_python.sh && ./installers/install_fairseq.sh
+# RUN . ./activate_python.sh && ./installers/install_fairseq.sh
+RUN . ./activate_python.sh && git clone https://github.com/pytorch/fairseq.git && cd fairseq && pip install --editable ./
+RUN . ./activate_python.sh && pip install --upgrade numpy && pip install numba==0.53
 
 WORKDIR /
 RUN ln -s espnet/tools/kaldi . && ln -s espnet/tools/fairseq .
