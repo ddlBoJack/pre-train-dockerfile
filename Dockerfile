@@ -39,9 +39,12 @@ RUN set -x \
     && unzip ninja-linux.zip -d /usr/local/bin/ \
     && rm -rf ninja-linux.zip \
     && update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force \
-    && git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime \
-    && sh ~/.vim_runtime/install_awesome_vimrc.sh \
-    && echo "set number" >> ~/.vimrc
+    && git clone https://github.com/chxuan/vimplus.git ~/.vimplus \
+    && cd ~/.vimplus \
+    && ./install.sh
+    # && git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime \
+    # && sh ~/.vim_runtime/install_awesome_vimrc.sh \
+    # && echo "set number" >> ~/.vimrc
 
 ENV PATH /opt/conda/bin:$PATH
 
