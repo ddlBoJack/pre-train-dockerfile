@@ -1,6 +1,7 @@
-FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
+# FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
+FROM aegis1/cuda11.1-cudnn8-devel-ubuntu20.04
 USER root
-RUN cp /etc/apt/sources.list.bak  /etc/apt/sources.list
+# RUN cp /etc/apt/sources.list.bak  /etc/apt/sources.list
 RUN apt update
 RUN apt-get -y install wget curl man git less openssl libssl-dev unzip
 RUN apt install -y openssh-server
@@ -63,6 +64,7 @@ RUN . ./activate_python.sh && pip install gpustat && pip install mpi4py
 # RUN . ./activate_python.sh && ./installers/install_fairseq.sh
 RUN . ./activate_python.sh && git clone https://github.com/pytorch/fairseq.git && cd fairseq && pip install --editable ./
 RUN . ./activate_python.sh && pip install --upgrade numpy && pip install numba==0.53
+RUN . ./activate_python.sh && pip install npy_append_array && pip install tensorboardX 
 
 WORKDIR /
 RUN ln -s espnet/tools/kaldi . && ln -s espnet/tools/fairseq .
