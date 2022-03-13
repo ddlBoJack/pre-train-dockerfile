@@ -1,5 +1,5 @@
-# FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
-FROM aegis1/cuda11.1-cudnn8-devel-ubuntu20.04
+FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
+# FROM aegis1/cuda11.1-cudnn8-devel-ubuntu20.04
 USER root
 # RUN cp /etc/apt/sources.list.bak  /etc/apt/sources.list
 RUN apt update
