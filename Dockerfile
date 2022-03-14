@@ -1,4 +1,4 @@
-FROM aegis1/cuda10.2-cudnn7-devel-ubuntu16.04
+FROM aegis1/cuda11.1-cudnn8-devel-ubuntu20.04
 
 LABEL MAINTAINER="matrixzheng01@gmail.com"
 
@@ -10,7 +10,6 @@ USER root
 # COPY Miniconda3-latest-Linux-x86_64.sh /root
 
 RUN set -x \
-    && cp /etc/apt/sources.list.bak  /etc/apt/sources.list \
     && apt update \
     && apt-get -y install wget curl man git less openssl libssl-dev unzip unar \
     && apt install -y openssh-server 
@@ -76,40 +75,29 @@ RUN cd /root \
     && cd fairseq \
     && pip install --editable ./
 
+# install flash light
+# step 1
+RUN apt-get install -y sudo && sudo apt update
+
+# step 2:  install boost, blas
+RUN apt search openlas && sudo apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev libnss3 libgtk-3-0 xdg-utils libopenblas-dev -y
+
+# step 3: install KENLM
+RUN git clone https://github.com/kpu/kenlm.git && cd kenlm && mkdir -p build && cd build && cmake .. && make -j 4
+
+# step 4: install FFTW3
+RUN wget http://www.fftw.org/fftw-3.3.9.tar.gz && tar zxvf fftw-3.3.9.tar.gz && cd fftw-3.3.9 && mkdir build && cd build && cmake .. && make -j 4 && sudo make install
+
+# step 5: install intel MKL
+# ref: https://github.com/eddelbuettel/mkl4deb
+RUN cd /tmp && wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list' && apt-get update && apt-get install -y intel-mkl-64bit-2018.2-046
+RUN pip install packaging && apt-get install -y vim &&  pip install editdistance && pip install gpustat
+
+# step 6: install flashlight/binding/python
+RUN git clone https://github.com/flashlight/flashlight.git && cd flashlight/bindings/python && export MKLROOT=/opt/intel/mkl/ && export KENLM_ROOT=/kenlm && python setup.py install --user
+
 ENV SHELL=/bin/bash
 CMD [ "/bin/bash" ]
 
 
 
-
-# install flashlight
-# RUN apt update \
-#     && apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev libnss3 libgtk-3-0 libglib2.0 xdg-utils libopenblas-dev -y \
-#     && cd home \
-#     && mkdir repo \
-#     && cd repo \
-#     && git clone git://github.com/kpu/kenlm.git \
-#     && cd kenlm \
-#     && mkdir -p build \
-#     && cd build \
-#     && cmake .. && make -j 4 \
-#     # install fftw3
-#     && cd /home/repo \
-#     && wget http://www.fftw.org/fftw-3.3.9.tar.gz \
-#     && tar zxvf fftw-3.3.9.tar.gz \
-#     && cd fftw-3.3.9 \
-#     && mkdir build \
-#     && cd build \
-#     && cmake .. && make -j 4 \
-#     && make install \
-#     && cd /home/repo \
-#     && wget https://registrationcenter-download.intel.com/akdlm/irc_nas/17977/l_BaseKit_p_2021.3.0.3219_offline.sh
-    # && bash l_BaseKit_p_2021.3.0.3219_offline.sh \
-    # # install flashlight
-    # && cd /home/repo \
-    # && git clone git://github.com/flashlight/flashlight.git \
-    # && cd flashlight/bindings/python \
-    # && export MKLROOT=/opt/intel/oneapi/mkl/latest \
-    # && export KENLM_ROOT=/home/repo/kenlm \
-    # && pip3 install packaging cmake \
-    # && python setup.py install --user
