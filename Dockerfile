@@ -71,7 +71,7 @@ RUN cd /root \
     && pip install soundfile \
     && apt-get install -y libsndfile1-dev \
     && cd / \
-    && git clone git://github.com/pytorch/fairseq \
+    && git clone https://github.com/pytorch/fairseq.git \
     && cd fairseq \
     && pip install --editable ./
 
@@ -95,6 +95,10 @@ RUN pip install packaging && apt-get install -y vim &&  pip install editdistance
 
 # step 6: install flashlight/binding/python
 RUN git clone https://github.com/flashlight/flashlight.git && cd flashlight/bindings/python && export MKLROOT=/opt/intel/mkl/ && export KENLM_ROOT=/kenlm && python setup.py install --user
+
+# some patches
+RUN apt-get install -y vim && pip install editdistance && pip install gpustat
+
 
 ENV SHELL=/bin/bash
 CMD [ "/bin/bash" ]
