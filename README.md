@@ -6,7 +6,7 @@ if you don't want to compile the dockerFile by yourself, you can just pull it fr
 Running the following code in your command line.
 
 ```
-docker pull matrixzheng/wav2vec:tag
+docker pull chenxie95/speechimage:decoder
 ```
 
 > here "tag" should be specified.
