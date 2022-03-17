@@ -1,6 +1,6 @@
 FROM aegis1/cuda11.1-cudnn8-devel-ubuntu20.04
 # (recommend) FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04 
-# if you use this image in high cuda like 11.3
+# if you use this image in high cuda envs like 11.3
 
 LABEL MAINTAINER="matrixzheng01@gmail.com"
 
