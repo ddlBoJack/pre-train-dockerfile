@@ -69,6 +69,9 @@ RUN cd /root \
     && echo "conda activate wav2vec" >> ~/.bashrc \
     # (optional) only for cloudbrain
     && pip install --upgrade numpy \ 
+    && pip install packaging \
+    && pip install editdistance \
+    && pip install gpustat \
     # install fairseq
     && pip install soundfile \
     && apt-get install -y libsndfile1-dev \
@@ -93,14 +96,13 @@ RUN wget http://www.fftw.org/fftw-3.3.9.tar.gz && tar zxvf fftw-3.3.9.tar.gz && 
 # step 5: install intel MKL
 # ref: https://github.com/eddelbuettel/mkl4deb
 RUN cd /tmp && wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list' && apt-get update && apt-get install -y intel-mkl-64bit-2018.2-046
-
-RUN conda activate wav2vec && pip install packaging && apt-get install -y vim && pip install editdistance && pip install gpustat
+# install some patches
+RUN apt-get install -y vim \
+    && pip install packaging
 
 # step 6: install flashlight/binding/python
 RUN git clone https://github.com/flashlight/flashlight.git && cd flashlight/bindings/python && export MKLROOT=/opt/intel/mkl/ && export KENLM_ROOT=/kenlm && python setup.py install --user
 
-# some patches
-# RUN apt-get install -y vim && pip install editdistance && pip install gpustat
 
 # (optional) used on relative new GPU such as 3090
 # RUN conda activate wav2vec && pip3 install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
