@@ -72,7 +72,7 @@ RUN cd /root \
     && pip install packaging \
     && pip install editdistance \
     && pip install gpustat \
-    && pip install tensorboard
+    && pip install tensorboard \
     # install fairseq
     && pip install soundfile \
     && apt-get install -y libsndfile1-dev \
