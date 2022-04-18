@@ -16,23 +16,6 @@ RUN set -x \
     && apt-get -y install wget curl man git less openssl libssl-dev unzip unar \
     && apt install -y openssh-server 
 
-ENV OPENMPI_VERSION=4.0
-ENV OPENMPI_STRING=openmpi-${OPENMPI_VERSION}.0
-RUN mkdir /tmp/openmpi \
-    && cd /tmp/openmpi \
-    && wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.0.tar.gz \
-    && tar zxf ${OPENMPI_STRING}.tar.gz \
-    && cd ${OPENMPI_STRING} \
-    && ./configure --enable-orterun-prefix-by-default --with-openib --prefix /usr/local/mpi \
-    && make -j 4 all \
-    && make install \
-    && ldconfig \
-    && rm -rf /tmp/openmpi \
-    && test -f /usr/local/mpi/bin/mpic++ # Sanity check
-
-ENV PATH /usr/local/mpi/bin:$PATH
-
-
 RUN set -x \
     && apt -y install tmux \
     # && git config --global http.proxy http://127.0.0.1:7890 \
@@ -48,9 +31,6 @@ RUN set -x \
     && echo "set number" >> ~/.vimrc
 
 ENV PATH /opt/conda/bin:$PATH
-
-# RUN cd / \
-    # && git clone git://github.com/pytorch/fairseq
 
 # install conda and fairseq
 RUN cd /root \
@@ -79,37 +59,19 @@ RUN cd /root \
     && cd / \
     && git clone https://github.com/pytorch/fairseq.git \
     && cd fairseq \
-    && pip install --editable ./
+    && pip install --editable ./ \
+    && conda install -c conda-forge npy-append-array -y \
+    && pip install librosa pandas sentencepiece
 
-# install flash light
-# step 1
-RUN apt-get install -y sudo && sudo apt update
+RUN apt-get install -y ffmpeg
 
-# step 2:  install boost, blas
-RUN apt search openlas && sudo apt install build-essential cmake libboost-system-dev libboost-thread-dev libboost-program-options-dev libboost-test-dev libeigen3-dev zlib1g-dev libbz2-dev liblzma-dev libnss3 libgtk-3-0 xdg-utils libopenblas-dev -y
-
-# step 3: install KENLM
-RUN git clone https://github.com/kpu/kenlm.git && cd kenlm && mkdir -p build && cd build && cmake .. && make -j 4
-
-# step 4: install FFTW3
-RUN wget http://www.fftw.org/fftw-3.3.9.tar.gz && tar zxvf fftw-3.3.9.tar.gz && cd fftw-3.3.9 && mkdir build && cd build && cmake .. && make -j 4 && sudo make install
-
-# step 5: install intel MKL
-# ref: https://github.com/eddelbuettel/mkl4deb
-RUN cd /tmp && wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB && sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list' && apt-get update && apt-get install -y intel-mkl-64bit-2018.2-046
-# install some patches
 RUN apt-get install -y vim \
     && pip install packaging
 
-# step 6: install flashlight/binding/python
-RUN git clone https://github.com/flashlight/flashlight.git && cd flashlight/bindings/python && export MKLROOT=/opt/intel/mkl/ && export KENLM_ROOT=/kenlm && . ~/.bashrc && conda activate wav2vec &&  python setup.py install --prefix /opt/conda/envs/wav2vec/
-
 # install rclone
-RUN curl https://rclone.org/install.sh | sudo bash
+RUN curl https://rclone.org/install.sh | bash
 RUN sed -i 's/shopt/# shopt/' ~/.bashrc
 
-# (optional) used on relative new GPU such as 3090
-# RUN conda activate wav2vec && pip3 install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
 ENV SHELL=/bin/bash
 CMD [ "/bin/bash" ]

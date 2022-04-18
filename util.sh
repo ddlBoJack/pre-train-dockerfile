@@ -1,6 +1,6 @@
 sudo docker build -t speechimage .
-sudo docker tag speechimage:latest chenxie95/speechimage:decode_v1
-sudo docker push chenxie95/speechimage:decode_v1
+sudo docker tag speechimage:latest chenxie95/speechimage:fairseq
+sudo docker push chenxie95/speechimage:fairseq
 sudo nvidia-docker run -it --rm chenxie95/speechimage:decode
 sudo nvidia-docker run -it --runtime=nvidia --name speechimage \
     --mount src=/mnt/xlancefs/home/chenxie95/data,target=/data/chenxie95,type=bind \
